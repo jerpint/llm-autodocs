@@ -44,3 +44,6 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
+
+[tool.poetry.scripts]
+autodocs = "src.cli:main"
