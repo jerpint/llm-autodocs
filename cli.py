@@ -1,7 +1,4 @@
-import os
 import argparse
-from pathlib import Path
-import sys
 
 from docgen import main as docgen_main
 
@@ -33,7 +30,7 @@ def parse_args():
         required=False,
         type=str,
         help="The type of documenter to use. Currently supported: ['ChatGPT']",
-        default="MockDocumenter",
+        default="ChatGPT",
     )
     return parser.parse_args()
 
