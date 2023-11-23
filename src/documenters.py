@@ -53,6 +53,7 @@ class ChatGPTDocumenter(Documenter):
     """
     Concrete LLM implementation using ChatGPT model.
     """
+
     def __init__(self):
         self.client = AsyncOpenAI(
             timeout=100,
@@ -132,11 +133,9 @@ Remember:
 A user will now provide you with their code. Document it accordingly.
 '''
 
-
     async def generate_docs(self, content: str) -> str:
         """
-        Asynchronous implementation for generating docstrings using the GPT-3
-        chat model.
+        Asynchronous implementation for generating docstrings using the chatGPT model.
 
         Args:
             content (str): The content of the file to be documented.
@@ -157,7 +156,7 @@ A user will now provide you with their code. Document it accordingly.
 
     async def format_output(self, input_str: str) -> str:
         """
-        Removes the first and last line of the given string if they are triple backticks.
+        Removes the first and last line of the given string if they contain triple backticks.
 
         Args:
         input_str (str): The input string to be formatted.
