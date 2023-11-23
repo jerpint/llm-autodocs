@@ -1,11 +1,14 @@
 from abc import ABC, abstractmethod
 import aiofiles
+import asyncio
 from openai import AsyncOpenAI
+
 
 # Base class for LLMs
 class Documenter(ABC):
     async def document(self, filename: str):
         # Open the file asynchronously
+        print(f"Beginning documentation of {filename=}")
         async with aiofiles.open(filename, "r") as f:
             content = await f.read()
 
@@ -127,6 +130,7 @@ A user will now provide you with their code. Document it accordingly.
 class MockDocumenter(Documenter):
     async def generate_docs(self, content: str) -> str:
         # Asynchronous mock implementation for LLM2
+        await asyncio.sleep(2)
         return "# This is automatically generated documentation\n" + content
 
 

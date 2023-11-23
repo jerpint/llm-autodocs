@@ -25,6 +25,7 @@ def get_tracked_python_files(directory: str) -> list:
 
     return files
 
+
 def confirm_action(files: list[str]) -> bool:
     """
     Display a warning and ask the user for confirmation to proceed.
@@ -41,6 +42,7 @@ def confirm_action(files: list[str]) -> bool:
     print(f"List of files that will be modified: {files}")
     choice = input("Do you want to proceed? ([y]/n): ").strip().lower()
     return choice in ["y", ""]
+
 
 async def main(
     documenter_name: str = "MockDocumenter", directory: str = None, file: str = None
@@ -61,12 +63,12 @@ async def main(
     documenter = await select_documenter(name=documenter_name)
 
     if confirm_action(python_files):
-        for file in python_files:
-            print(f"Beginning documentation generation for {file=}")
-            try:
-                await documenter.document(file)  # Happens in place.
-                print("Documentation generation completed.")
-            except Exception as e:
-                print(f"Something went wrong generating {file=}. See traceback...\n{e}")
+        # for file in python_files:
+        #     print(f"Beginning documentation generation for {file=}")
+        tasks = [documenter.document(file) for file in python_files]
+        await asyncio.gather(*tasks)
+
+        print("Documentation generation completed.")
+
     else:
         print("Action aborted by the user.")
