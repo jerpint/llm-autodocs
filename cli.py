@@ -17,7 +17,23 @@ def parse_args():
         description="CLI for generating documentation in Python files."
     )
     parser.add_argument(
-        "directory", type=str, help="The directory to scan for Python files."
+        "--directory",
+        type=str,
+        help="The directory to scan for Python files.",
+        default=None,
+    )
+    parser.add_argument(
+        "--file",
+        type=str,
+        help="The single python file to handle",
+        default=None,
+    )
+    parser.add_argument(
+        "--documenter",
+        required=False,
+        type=str,
+        help="The type of documenter to use. Currently supported: ['ChatGPT']",
+        default="MockDocumenter",
     )
     return parser.parse_args()
 
@@ -25,15 +41,11 @@ def parse_args():
 def main():
     args = parse_args()
 
-    # Change to the specified directory
-    try:
-        os.chdir(Path(args.directory).resolve())
-    except FileNotFoundError:
-        print(f"Error: Directory '{args.directory}' does not exist.")
-        sys.exit(1)
-
     # Call the main function from your original script
-    docgen_main()
+    print(args)
+    docgen_main(
+        documenter_name=args.documenter, file=args.file, directory=args.directory
+    )
 
 
 if __name__ == "__main__":
