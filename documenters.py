@@ -11,7 +11,9 @@ class Documenter(ABC):
         try:
             modified_content = self.generate_docs(content)
         except Exception as e:
-            print(f"Something went wrong generating docs for {filename=}. See Traceback\n{e}")
+            print(
+                f"Something went wrong generating docs for {filename=}. See Traceback\n{e}"
+            )
 
         with open(filename, "w") as f:
             f.write(modified_content)
@@ -19,6 +21,7 @@ class Documenter(ABC):
     @abstractmethod
     def generate_docs(self, content: str) -> str:
         pass
+
 
 def connect_to_next_port(self, minimum: int) -> int:
     """Connects to the next available port.
@@ -43,10 +46,8 @@ def connect_to_next_port(self, minimum: int) -> int:
     return port
 
 
-
 # Concrete LLM implementations
 class ChatGPTDocumenter(Documenter):
-
     def __init__(self):
         self.client = OpenAI(
             timeout=30,
@@ -114,11 +115,7 @@ def connect_to_next_port(self, minimum: int) -> int:
     return port
 '''
 
-
-        self.completion_kwargs = {
-                "model": "gpt-3.5-turbo"
-            }
-
+        self.completion_kwargs = {"model": "gpt-3.5-turbo"}
 
     def generate_docs(self, content: str) -> str:
         # Implementation for LLM1
@@ -127,7 +124,9 @@ def connect_to_next_port(self, minimum: int) -> int:
             {"role": "user", "content": content},
         ]
 
-        response = self.client.chat.completions.create(messages=messages, **self.completion_kwargs)
+        response = self.client.chat.completions.create(
+            messages=messages, **self.completion_kwargs
+        )
         output: str = response.choices[0].message.content
         return output
 
