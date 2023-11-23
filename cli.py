@@ -1,6 +1,6 @@
 import argparse
 import asyncio
-from docgen import main as docgen_main
+from autodocs import main as docgen_main
 
 
 def parse_args():
