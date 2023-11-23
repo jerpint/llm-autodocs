@@ -36,6 +36,9 @@ def parse_args():
 
 
 def main():
+    """
+    Parse command line arguments, call the documentation generation function, and run the asyncio event loop.
+    """
     args = parse_args()
 
     print(args)
