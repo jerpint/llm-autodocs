@@ -28,29 +28,6 @@ class Documenter(ABC):
         pass
 
 
-def connect_to_next_port(self, minimum: int) -> int:
-    """Connects to the next available port.
-
-    Args:
-      minimum: A port value greater or equal to 1024.
-
-    Returns:
-      The new minimum port.
-
-    Raises:
-      ConnectionError: If no available port is found.
-    """
-    if minimum < 1024:
-        raise ValueError(f"Min. port must be at least 1024, not {minimum}.")
-    port = self._find_next_open_port(minimum)
-    if port is None:
-        raise ConnectionError(
-            f"Could not connect to service on port {minimum} or higher."
-        )
-    assert port >= minimum, f"Unexpected port {port} when minimum was {minimum}."
-    return port
-
-
 # Concrete LLM implementations
 class ChatGPTDocumenter(Documenter):
     def __init__(self):
