@@ -5,16 +5,21 @@ from openai import OpenAI
 # Base class for LLMs
 class Documenter(ABC):
     def document(self, filename):
+
+        # Open the file
         with open(filename, "r") as f:
             content = f.read()
 
+        # Generate the docstrings
         try:
             modified_content = self.generate_docs(content)
         except Exception as e:
             print(
                 f"Something went wrong generating docs for {filename=}. See Traceback\n{e}"
             )
+            return
 
+        # Write the modified contents back to original file
         with open(filename, "w") as f:
             f.write(modified_content)
 
@@ -50,16 +55,18 @@ def connect_to_next_port(self, minimum: int) -> int:
 class ChatGPTDocumenter(Documenter):
     def __init__(self):
         self.client = OpenAI(
-            timeout=30,
+            timeout=100,
             max_retries=3,
         )
 
         self.system_prompt = '''You are a helpful coding assistant.
 You will be helping to write docstrings for python code.
-You only add and modify docstrings.
-You will be given the entire contents of a .py file.
-You return the entire contents of the .py file with the additional docstrings.
-If docstrings are already there, make them clearer if necessary.
+
+- You only add and modify docstrings.
+- You will be given the entire contents of a .py file.
+- You return the entire contents of the .py file with the additional docstrings.
+- If docstrings are already there, make them clearer if necessary.
+- Do not include backticks when replying, like ```python\n...\n```
 
 ** YOU DO NOT MODIFY ANY CODE **
 
@@ -87,7 +94,7 @@ def connect_to_next_port(self, minimum: int) -> int:
     assert port >= minimum, f"Unexpected port {port} when minimum was {minimum}."
     return port
 
-You return:
+You would return:
 
 def connect_to_next_port(self, minimum: int) -> int:
     """Connects to the next available port.
@@ -113,9 +120,19 @@ def connect_to_next_port(self, minimum: int) -> int:
         )
     assert port >= minimum, f"Unexpected port {port} when minimum was {minimum}."
     return port
+
+Remember:
+
+- You only add and modify docstrings.
+- You will be given the entire contents of a .py file.
+- You return the entire contents of the .py file with the additional docstrings.
+- If docstrings are already there, make them clearer if necessary.
+- Do not include backticks when replying, like ```python\n...\n```
+
+A user will now provide you with their code. Document it accordingly.
 '''
 
-        self.completion_kwargs = {"model": "gpt-3.5-turbo"}
+        self.completion_kwargs = {"model": "gpt-3.5-turbo-1106"}
 
     def generate_docs(self, content: str) -> str:
         # Implementation for LLM1
