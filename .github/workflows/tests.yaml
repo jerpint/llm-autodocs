@@ -12,4 +12,4 @@ jobs:
       - name: black linter
         uses: psf/black@stable
         with:
-          options: "--check --diff --line-length 120"
+          options: "--check --diff --line-length 90"

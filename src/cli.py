@@ -1,6 +1,6 @@
 import argparse
 import asyncio
-from autodocs import main as docgen_main
+from src.autodocs import main as docgen_main
 
 
 def parse_args():
@@ -29,21 +29,22 @@ def parse_args():
         "--documenter",
         required=False,
         type=str,
-        help="The type of documenter to use. Currently supported: ['ChatGPT']",
+        help="The type of documenter to use. Currently supported: ['ChatGPT', 'MockDocumenter']",
         default="ChatGPT",
     )
     return parser.parse_args()
 
 
-async def main():
+def main():
     args = parse_args()
 
-    # Call the asynchronous main function from your original script
     print(args)
-    await docgen_main(
-        documenter_name=args.documenter, file=args.file, directory=args.directory
+    asyncio.run(
+        docgen_main(
+            documenter_name=args.documenter, file=args.file, directory=args.directory
+        )
     )
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
