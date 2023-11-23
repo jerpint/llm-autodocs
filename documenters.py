@@ -45,7 +45,6 @@ You will be helping to write docstrings for python code.
 - You will be given the entire contents of a .py file.
 - You return the entire contents of the .py file with the additional docstrings.
 - If docstrings are already there, make them clearer if necessary.
-- Do not include backticks when replying, like ```python\n...\n```
 
 ** YOU DO NOT MODIFY ANY CODE **
 
@@ -106,12 +105,12 @@ Remember:
 - You will be given the entire contents of a .py file.
 - You return the entire contents of the .py file with the additional docstrings.
 - If docstrings are already there, make them clearer if necessary.
-- Do not include backticks when replying, like ```python\n...\n```
 
 A user will now provide you with their code. Document it accordingly.
 '''
 
         self.completion_kwargs = {"model": "gpt-3.5-turbo-1106"}
+
 
     async def generate_docs(self, content: str) -> str:
         # Asynchronous implementation for LLM1
@@ -124,7 +123,24 @@ A user will now provide you with their code. Document it accordingly.
             messages=messages, **self.completion_kwargs
         )
         output: str = response.choices[0].message.content
-        return output
+        return await self.format_output(output)
+
+
+    async def format_output(self, input_str: str) -> str:
+        """
+        Removes the first and last line of the given string if they are triple backticks.
+
+        Args:
+        input_str (str): The input string to be formatted.
+
+        Returns:
+        str: The formatted string with the first and last lines removed if they are triple backticks.
+        """
+        lines = input_str.split('\n')
+        if "```" in lines[0] and "```" in lines[-1]:
+            return '\n'.join(lines[1:-1])
+        return input_str
+
 
 
 class MockDocumenter(Documenter):
