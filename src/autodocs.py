@@ -6,8 +6,10 @@ from src.documenters import select_documenter
 
 
 def get_tracked_python_files(directory: str) -> list:
-    """
-    Get a list of all git tracked Python (*.py) files in the directory.
+    """Get a list of all git tracked Python (*.py) files in the directory.
+
+    Args:
+    directory: A string representing the directory path.
 
     Returns:
     list: A list of file paths.
@@ -27,11 +29,10 @@ def get_tracked_python_files(directory: str) -> list:
 
 
 def confirm_action(files: list[str]) -> bool:
-    """
-    Display a warning and ask the user for confirmation to proceed.
+    """Display a warning and ask the user for confirmation to proceed.
 
     Args:
-    file_count (int): The number of files that will be modified.
+    files: A list of file paths.
 
     Returns:
     bool: True if the user confirms, False otherwise.
@@ -47,6 +48,16 @@ def confirm_action(files: list[str]) -> bool:
 async def main(
     documenter_name: str = "MockDocumenter", directory: str = None, file: str = None
 ):
+    """Asynchronously generates documentation for the specified Python files.
+
+    Args:
+    documenter_name: The name of the documenter to be used.
+    directory: A string representing the directory path.
+    file: A string representing a single file path.
+
+    Raises:
+    ValueError: If no directory or file is specified, or if both directory and file are specified.
+    """
     if directory is None and file is None:
         raise ValueError("No directory or file specified.")
 
@@ -63,8 +74,6 @@ async def main(
     documenter = await select_documenter(name=documenter_name)
 
     if confirm_action(python_files):
-        # for file in python_files:
-        #     print(f"Beginning documentation generation for {file=}")
         tasks = [documenter.document(file) for file in python_files]
         await asyncio.gather(*tasks)
 

@@ -4,9 +4,18 @@ import asyncio
 from openai import AsyncOpenAI
 
 
-# Base class for LLMs
 class Documenter(ABC):
+    """
+    An abstract base class for a documenter service.
+    """
+
     async def document(self, filename: str):
+        """
+        Method to automatically generate documentation for the provided file.
+
+        Args:
+            filename (str): The name of the file to document.
+        """
         # Open the file asynchronously
         print(f"Beginning documentation of {filename=}")
         async with aiofiles.open(filename, "r") as f:
@@ -27,16 +36,31 @@ class Documenter(ABC):
 
     @abstractmethod
     async def generate_docs(self, content: str) -> str:
+        """
+        Abstract method meant to be overriden by concrete implementation. It handles
+        the generation of docstrings.
+
+        Args:
+            content (str): The content of the file to be documented.
+
+        Returns:
+            str: The updated content with generated docstrings.
+        """
         pass
 
 
-# Concrete LLM implementations
 class ChatGPTDocumenter(Documenter):
+    """
+    Concrete LLM implementation using ChatGPT model.
+    """
+
     def __init__(self):
         self.client = AsyncOpenAI(
             timeout=100,
             max_retries=3,
         )
+
+        self.completion_kwargs = {"model": "gpt-4"}
 
         self.system_prompt = '''You are a helpful coding assistant.
 You will be helping to write docstrings for python code.
@@ -109,10 +133,16 @@ Remember:
 A user will now provide you with their code. Document it accordingly.
 '''
 
-        self.completion_kwargs = {"model": "gpt-3.5-turbo-1106"}
-
     async def generate_docs(self, content: str) -> str:
-        # Asynchronous implementation for LLM1
+        """
+        Asynchronous implementation for generating docstrings using the chatGPT model.
+
+        Args:
+            content (str): The content of the file to be documented.
+
+        Returns:
+            str: The updated content with generated docstrings.
+        """
         messages = [
             {"role": "system", "content": self.system_prompt},
             {"role": "user", "content": content},
@@ -126,7 +156,7 @@ A user will now provide you with their code. Document it accordingly.
 
     async def format_output(self, input_str: str) -> str:
         """
-        Removes the first and last line of the given string if they are triple backticks.
+        Removes the first and last line of the given string if they contain triple backticks.
 
         Args:
         input_str (str): The input string to be formatted.
@@ -141,14 +171,37 @@ A user will now provide you with their code. Document it accordingly.
 
 
 class MockDocumenter(Documenter):
+    """
+    Mock implementation for a documenter.
+    """
+
     async def generate_docs(self, content: str) -> str:
-        # Asynchronous mock implementation for LLM2
+        """
+        Asynchronously mocks the process of generating docstrings.
+
+        Args:
+            content(str): File content to be documented.
+
+        Returns:
+            str: Content with auto generated documentation summary line.
+        """
         await asyncio.sleep(2)
         return "# This is automatically generated documentation\n" + content
 
 
-# Factory to create LLM instances
 async def select_documenter(name: str) -> Documenter:
+    """
+    Factory function to create an instance of Documenter based on the provided name.
+
+    Args:
+        name (str): Name of the Documenter to create. Can be "ChatGPT" or "MockDocumenter".
+
+    Returns:
+        Documenter: Instance of Documenter class.
+
+    Raises:
+        NotImplementedError: Raised when the name does not match any existing Documenter.
+    """
     if name == "ChatGPT":
         return ChatGPTDocumenter()
     elif name == "MockDocumenter":
