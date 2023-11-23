@@ -1,5 +1,5 @@
 import argparse
-
+import asyncio
 from docgen import main as docgen_main
 
 
@@ -35,15 +35,15 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
+async def main():
     args = parse_args()
 
-    # Call the main function from your original script
+    # Call the asynchronous main function from your original script
     print(args)
-    docgen_main(
+    await docgen_main(
         documenter_name=args.documenter, file=args.file, directory=args.directory
     )
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

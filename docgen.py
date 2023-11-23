@@ -1,11 +1,8 @@
+import asyncio
 import subprocess
 from pathlib import Path
 
 from documenters import select_documenter
-
-
-import subprocess
-from pathlib import Path
 
 
 def get_tracked_python_files(directory: str) -> list:
@@ -23,10 +20,10 @@ def get_tracked_python_files(directory: str) -> list:
     files = result.strip().split("\n")
 
     # Drop __init__.py files
-    files.remove("__init__.py")
+    if "__init__.py" in files:
+        files.remove("__init__.py")
 
     return files
-
 
 def confirm_action(files: list[str]) -> bool:
     """
@@ -43,11 +40,9 @@ def confirm_action(files: list[str]) -> bool:
     )
     print(f"List of files that will be modified: {files}")
     choice = input("Do you want to proceed? ([y]/n): ").strip().lower()
-    print(choice)
     return choice in ["y", ""]
 
-
-def main(
+async def main(
     documenter_name: str = "MockDocumenter", directory: str = None, file: str = None
 ):
     if directory is None and file is None:
@@ -56,19 +51,20 @@ def main(
     if directory is not None and file is not None:
         raise ValueError("Only one of directory or file should be specified.")
 
+    python_files = []
     if directory is not None:
         python_files = get_tracked_python_files(directory)
 
     if file is not None:
         python_files = [file]
 
-    documenter = select_documenter(name=documenter_name)
+    documenter = await select_documenter(name=documenter_name)
 
     if confirm_action(python_files):
         for file in python_files:
             print(f"Beginning documentation generation for {file=}")
             try:
-                documenter.document(file)  # Happens in place.
+                await documenter.document(file)  # Happens in place.
                 print("Documentation generation completed.")
             except Exception as e:
                 print(f"Something went wrong generating {file=}. See traceback...\n{e}")
