@@ -111,7 +111,6 @@ A user will now provide you with their code. Document it accordingly.
 
         self.completion_kwargs = {"model": "gpt-3.5-turbo-1106"}
 
-
     async def generate_docs(self, content: str) -> str:
         # Asynchronous implementation for LLM1
         messages = [
@@ -125,7 +124,6 @@ A user will now provide you with their code. Document it accordingly.
         output: str = response.choices[0].message.content
         return await self.format_output(output)
 
-
     async def format_output(self, input_str: str) -> str:
         """
         Removes the first and last line of the given string if they are triple backticks.
@@ -136,11 +134,10 @@ A user will now provide you with their code. Document it accordingly.
         Returns:
         str: The formatted string with the first and last lines removed if they are triple backticks.
         """
-        lines = input_str.split('\n')
+        lines = input_str.split("\n")
         if "```" in lines[0] and "```" in lines[-1]:
-            return '\n'.join(lines[1:-1])
+            return "\n".join(lines[1:-1])
         return input_str
-
 
 
 class MockDocumenter(Documenter):

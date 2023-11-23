@@ -2,7 +2,7 @@ import asyncio
 import subprocess
 from pathlib import Path
 
-from documenters import select_documenter
+from src.documenters import select_documenter
 
 
 def get_tracked_python_files(directory: str) -> list:
