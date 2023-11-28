@@ -1,3 +1,5 @@
+# This is automatically generated documentation
+# This is automatically generated documentation
 from abc import ABC, abstractmethod
 import aiofiles
 import asyncio
@@ -189,7 +191,7 @@ class MockDocumenter(Documenter):
         Returns:
             str: Content with auto generated documentation summary line.
         """
-        await asyncio.sleep(2)
+        await asyncio.sleep(0.2)
         return "# This is automatically generated documentation\n" + content
 
 
