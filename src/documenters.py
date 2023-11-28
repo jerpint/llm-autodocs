@@ -1,5 +1,3 @@
-# This is automatically generated documentation
-# This is automatically generated documentation
 from abc import ABC, abstractmethod
 import aiofiles
 import asyncio
