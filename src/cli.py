@@ -14,6 +14,7 @@ def parse_args():
         description="CLI for generating documentation in Python files."
     )
     parser.add_argument(
+        "-d",
         "--directory",
         type=str,
         help="The directory to scan for tracked Python files.",
