@@ -43,7 +43,6 @@ def main():
     """
     args = parse_args()
 
-    print(args)
     asyncio.run(
         docgen_main(
             documenter_name=args.documenter,

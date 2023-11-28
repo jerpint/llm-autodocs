@@ -71,6 +71,8 @@ async def main(documenter_name: str, directory: str, files: list[str] = None):
     # Select the documenter to use
     documenter = select_documenter(documenter_name)
 
+    print(f"Selected documenter: {documenter_name}\n")
+
     if confirm_action(python_files):
         tasks = [documenter.document(file) for file in python_files]
         await asyncio.gather(*tasks)
