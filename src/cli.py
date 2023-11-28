@@ -14,23 +14,25 @@ def parse_args():
         description="CLI for generating documentation in Python files."
     )
     parser.add_argument(
+        "-d",
         "--directory",
         type=str,
-        help="The directory to scan for Python files.",
-        default=None,
+        help="The directory to scan for tracked Python files.",
+        default=".",
     )
     parser.add_argument(
-        "--file",
-        type=str,
-        help="The single python file to handle",
+        "-f",
+        "--files-list",
+        nargs="+",
         default=None,
+        help="Specify specific python files to consider (they must be tracked by git). Separate file names by a space.",
     )
     parser.add_argument(
         "--documenter",
         required=False,
         type=str,
-        help="The type of documenter to use. Currently supported: ['ChatGPT', 'MockDocumenter']",
-        default="ChatGPT",
+        help="The type of documenter to use. Currently supported models: 'gpt-3.5-turbo', 'gpt-4' and any of their variants. 'debug' also supported for debugging.",
+        default="gpt-3.5-turbo",
     )
     return parser.parse_args()
 
@@ -41,10 +43,11 @@ def main():
     """
     args = parse_args()
 
-    print(args)
     asyncio.run(
         docgen_main(
-            documenter_name=args.documenter, file=args.file, directory=args.directory
+            documenter_name=args.documenter,
+            files=args.files_list,
+            directory=args.directory,
         )
     )
 

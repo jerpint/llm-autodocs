@@ -38,16 +38,17 @@ def confirm_action(files: list[str]) -> bool:
     bool: True if the user confirms, False otherwise.
     """
     print(
-        f"Warning: This action will modify {len(files)} files. This might be a destructive action. We recommend working on a clean git branch. Make sure you have backups just in case."
+        f"""** Warning ** : This action will modify the following {len(files)} file(s) in-place:
+
+{files}
+
+This might be a destructive action. We recommend working on a clean git branch and having a backup just in case.\n\n"""
     )
-    print(f"List of files that will be modified: {files}")
     choice = input("Do you want to proceed? ([y]/n): ").strip().lower()
     return choice in ["y", ""]
 
 
-async def main(
-    documenter_name: str = "MockDocumenter", directory: str = None, file: str = None
-):
+async def main(documenter_name: str, directory: str, files: list[str] = None):
     """Asynchronously generates documentation for the specified Python files.
 
     Args:
@@ -58,20 +59,19 @@ async def main(
     Raises:
     ValueError: If no directory or file is specified, or if both directory and file are specified.
     """
-    if directory is None and file is None:
-        raise ValueError("No directory or file specified.")
 
-    if directory is not None and file is not None:
-        raise ValueError("Only one of directory or file should be specified.")
+    python_files = get_tracked_python_files(directory)
+    if files is not None:
+        python_files = [f for f in python_files if f in files]
 
-    python_files = []
-    if directory is not None:
-        python_files = get_tracked_python_files(directory)
+    if len(python_files) == 0:
+        print(f"No tracked .py files found in the {directory=} and {files=}. Aborting.")
+        return
 
-    if file is not None:
-        python_files = [file]
+    # Select the documenter to use
+    documenter = select_documenter(documenter_name)
 
-    documenter = await select_documenter(name=documenter_name)
+    print(f"Selected documenter: {documenter_name}\n")
 
     if confirm_action(python_files):
         tasks = [documenter.document(file) for file in python_files]
