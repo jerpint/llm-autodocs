@@ -31,7 +31,7 @@ def parse_args():
         "--documenter",
         required=False,
         type=str,
-        help="The type of documenter to use. Currently supported: ['ChatGPT', 'MockDocumenter']",
+        help="The type of documenter to use. Currently supported models: 'gpt-3.5-turbo', 'gpt-4' and any of their variants. 'debug' also supported for debugging.",
         default="gpt-3.5-turbo",
     )
     return parser.parse_args()

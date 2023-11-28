@@ -206,10 +206,11 @@ def select_documenter(model: str) -> Documenter:
     Raises:
         NotImplementedError: Raised when the name does not match any existing Documenter.
     """
+    print(f"Documenter model name: {model}")
     if "gpt-4" in model or "gpt-3.5-turbo" in model:
         # Supports any of the gpt-4 and gpt-3.5-turbo models
         return ChatGPTDocumenter(model=model)
-    elif model == "MockDocumenter":
+    elif model == "debug":
         return MockDocumenter(model=model)
     else:
         raise NotImplementedError(f"Error: Unknown Documenter '{model}'.")
