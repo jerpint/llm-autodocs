@@ -16,21 +16,22 @@ def parse_args():
     parser.add_argument(
         "--directory",
         type=str,
-        help="The directory to scan for Python files.",
-        default=None,
+        help="The directory to scan for tracked Python files.",
+        default=".",
     )
     parser.add_argument(
-        "--file",
-        type=str,
-        help="The single python file to handle",
+        "-f",
+        "--files-list",
+        nargs="+",
         default=None,
+        help="Specify specific python files to consider (they must be tracked by git). Separate file names by a space.",
     )
     parser.add_argument(
         "--documenter",
         required=False,
         type=str,
         help="The type of documenter to use. Currently supported: ['ChatGPT', 'MockDocumenter']",
-        default="ChatGPT",
+        default="gpt-3.5-turbo",
     )
     return parser.parse_args()
 
@@ -44,7 +45,9 @@ def main():
     print(args)
     asyncio.run(
         docgen_main(
-            documenter_name=args.documenter, file=args.file, directory=args.directory
+            documenter_name=args.documenter,
+            files=args.files_list,
+            directory=args.directory,
         )
     )
 

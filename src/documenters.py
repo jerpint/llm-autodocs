@@ -9,6 +9,9 @@ class Documenter(ABC):
     An abstract base class for a documenter service.
     """
 
+    def __init__(self, model: str):
+        self.model = model
+
     async def document(self, filename: str):
         """
         Method to automatically generate documentation for the provided file.
@@ -54,13 +57,14 @@ class ChatGPTDocumenter(Documenter):
     Concrete LLM implementation using ChatGPT model.
     """
 
-    def __init__(self):
+    def __init__(self, model: str):
+        self.model = model
         self.client = AsyncOpenAI(
             timeout=100,
             max_retries=3,
         )
 
-        self.completion_kwargs = {"model": "gpt-4"}
+        self.completion_kwargs = {"model": self.model}
 
         self.system_prompt = '''You are a helpful coding assistant.
 You will be helping to write docstrings for python code.
@@ -189,12 +193,12 @@ class MockDocumenter(Documenter):
         return "# This is automatically generated documentation\n" + content
 
 
-async def select_documenter(name: str) -> Documenter:
+def select_documenter(model: str) -> Documenter:
     """
     Factory function to create an instance of Documenter based on the provided name.
 
     Args:
-        name (str): Name of the Documenter to create. Can be "ChatGPT" or "MockDocumenter".
+        name (str): Name of the Documenter to create. Can be any of the chatgpt models (e.g. gpt-4, gpt-3.5-turbo, etc.) or "MockDocumenter" (for debugging).
 
     Returns:
         Documenter: Instance of Documenter class.
@@ -202,9 +206,10 @@ async def select_documenter(name: str) -> Documenter:
     Raises:
         NotImplementedError: Raised when the name does not match any existing Documenter.
     """
-    if name == "ChatGPT":
-        return ChatGPTDocumenter()
-    elif name == "MockDocumenter":
-        return MockDocumenter()
+    if "gpt-4" in model or "gpt-3.5-turbo" in model:
+        # Supports any of the gpt-4 and gpt-3.5-turbo models
+        return ChatGPTDocumenter(model=model)
+    elif model == "MockDocumenter":
+        return MockDocumenter(model=model)
     else:
-        raise NotImplementedError(f"Error: Unknown Documenter '{name}'.")
+        raise NotImplementedError(f"Error: Unknown Documenter '{model}'.")
