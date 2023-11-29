@@ -15,11 +15,17 @@ def get_tracked_python_files(directory: str) -> list:
     list: A list of file paths.
     """
     fullpath = str(Path(directory).absolute())
+
     # Run Git command to list tracked .py files
     result = subprocess.check_output(
         f"cd {fullpath} && git ls-files | grep '\.py$'", shell=True
     ).decode("utf-8")
+
+    # Get the resulting files in a list
     files = result.strip().split("\n")
+
+    # add the directory to the files
+    files = [str(Path(directory) / file) for file in files]
 
     return files
 
