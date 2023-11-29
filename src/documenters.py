@@ -20,7 +20,7 @@ class Documenter(ABC):
             filename (str): The name of the file to document.
         """
         # Open the file asynchronously
-        print(f"Beginning documentation of {filename=}")
+        print(f"Beginning documentation of {filename=} using {self.model}...")
         async with aiofiles.open(filename, "r") as f:
             content = await f.read()
 
@@ -36,6 +36,7 @@ class Documenter(ABC):
         # Write the modified contents back to original file
         async with aiofiles.open(filename, "w") as f:
             await f.write(modified_content)
+        print(f"Finished documentation of {filename=}.")
 
     @abstractmethod
     async def generate_docs(self, content: str) -> str:
