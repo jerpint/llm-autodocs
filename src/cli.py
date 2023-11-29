@@ -21,11 +21,18 @@ def parse_args():
         default=".",
     )
     parser.add_argument(
-        "-f",
-        "--files-list",
+        "-a",
+        "--allowed-files",
         nargs="+",
         default=None,
-        help="Specify specific python files to consider (they must be tracked by git). Separate file names by a space.",
+        help="Specify specific python files to consider (they must be tracked by git). Will only include all files ending with the patterns specifed (e.g. base.py). Disabled if not specified.",
+    )
+    parser.add_argument(
+        "-i",
+        "--ignored-files",
+        nargs="+",
+        default=None,
+        help="Specify specific python files to ignore (they must be tracked by git) e.g. __init__.py to ignore any init files. Disabled if not specified.",
     )
     parser.add_argument(
         "--documenter",
@@ -46,7 +53,8 @@ def main():
     asyncio.run(
         docgen_main(
             documenter_name=args.documenter,
-            files=args.files_list,
+            allowed_files=args.allowed_files,
+            ignored_files=args.ignored_files,
             directory=args.directory,
         )
     )
