@@ -21,10 +21,6 @@ def get_tracked_python_files(directory: str) -> list:
     ).decode("utf-8")
     files = result.strip().split("\n")
 
-    # Drop __init__.py files
-    if "__init__.py" in files:
-        files.remove("__init__.py")
-
     return files
 
 
@@ -48,24 +44,39 @@ This might be a destructive action. We recommend working on a clean git branch a
     return choice in ["y", ""]
 
 
-async def main(documenter_name: str, directory: str, files: list[str] = None):
+async def main(
+    documenter_name: str,
+    directory: str,
+    allowed_files: list[str] = None,
+    ignored_files: list[str] = None,
+):
     """Asynchronously generates documentation for the specified Python files.
 
     Args:
     documenter_name: The name of the documenter to be used.
     directory: A string representing the directory path.
-    file: A string representing a single file path.
+    allowed_files: A list of strings representing the names of allowed files.
+    ingored_files: A list of strings representing the names of files to ignore.
 
     Raises:
     ValueError: If no directory or file is specified, or if both directory and file are specified.
     """
 
+    # get all .py under directory tracked by git
     python_files = get_tracked_python_files(directory)
-    if files is not None:
-        python_files = [f for f in python_files if f in files]
+
+    # include allowed files only
+    if allowed_files is not None:
+        for allowed in allowed_files:
+            python_files = [file for file in python_files if file.endswith(allowed)]
+
+    # exclude all ignored files
+    if ignored_files is not None:
+        for ignore in ignored_files:
+            python_files = [file for file in python_files if not file.endswith(ignore)]
 
     if len(python_files) == 0:
-        print(f"No tracked .py files found in the {directory=} and {files=}. Aborting.")
+        print(f"No tracked .py files found matching the criteria. Aborting.")
         return
 
     # Select the documenter to use
