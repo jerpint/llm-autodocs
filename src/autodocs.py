@@ -1,5 +1,6 @@
 import asyncio
 import subprocess
+import os
 from pathlib import Path
 
 from src.documenters import select_documenter
@@ -67,6 +68,10 @@ async def main(
     Raises:
     ValueError: If no directory or file is specified, or if both directory and file are specified.
     """
+
+    if not os.path.exists(directory):
+        print(f"--{directory=} not found.")
+        return
 
     # get all .py under directory tracked by git
     python_files = get_tracked_python_files(directory)
