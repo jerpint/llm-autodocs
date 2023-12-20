@@ -7,7 +7,7 @@ name = "llm-autodocs"
 version = "0.0.1"
 description = "llm-autodocs 🧞: Automatically generate docstrings for your codebase using LLMs."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.8"
 dynamic = ["dependencies"]
 
 
@@ -43,7 +43,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.13"
+python = ">=3.8,<3.13"
 
 [tool.poetry.scripts]
 autodocs = "src.cli:main"
